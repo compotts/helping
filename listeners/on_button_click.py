@@ -77,7 +77,10 @@ class OnButtonClickListener(commands.Cog):
                                 "Сейчас постараемся решить твой вопрос, оставайся на связи",
                     color=0x2F3136
                 )
-                await member.send(embed=embed)
+                await member.send(
+                    embed=embed,
+                    view=view
+                )
             except disnake.HTTPException:
                 await interaction.response.send_message(
                     embed=disnake.Embed(

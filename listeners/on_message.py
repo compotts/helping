@@ -109,11 +109,8 @@ class OnMessageListener(commands.Cog):
             "В ожидании"
         )
 
-        print(123)
-        print(ticket_channel.applied_tags)
         if solved_ticket in ticket_channel.applied_tags or in_waiting in ticket_channel.applied_tags:
             return
-        print(456)
 
         embed = disnake.Embed(
             description=message.content,
