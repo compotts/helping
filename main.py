@@ -49,7 +49,8 @@ for filename in os.listdir("./cogs") + os.listdir("./listeners"):
 if __name__ == "__main__":
     load_dotenv()
     token = os.getenv("DISCORD_TOKEN")
-    if not token or token == "":
-        raise EnvironmentError("Please set the DISCORD_TOKEN environment variable before running this bot.")
+    database_url = os.getenv("DATABASE_URL")
+    if not token or token == "" or not database_url or database_url == "":
+        raise EnvironmentError("Please set the DISCORD_TOKEN and DATABASE_URL environment variables before running this bot.")
 
     bot.run(token)
