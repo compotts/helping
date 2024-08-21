@@ -257,6 +257,11 @@ class OnButtonClickListener(commands.Cog):
                 channel_id=ticket_channel.id
             )
 
+            webhooks = await ticket_channel.parent.webhooks()
+            webhook = next((wh for wh in webhooks if wh.name == interaction.author.display_name), None)
+            if webhook:
+                await webhook.delete(reason="Обращение закрыто")
+
             await interaction.response.edit_message(
                 embed=disnake.Embed(
                     title="Вы закрыли обращение",
@@ -338,7 +343,13 @@ class OnButtonClickListener(commands.Cog):
                 member_id=row.member_id,
                 channel_id=interaction.channel.id
             )
+
             member = interaction.guild.get_member(row.member_id)
+            webhooks = await interaction.channel.parent.webhooks()
+            webhook = next((wh for wh in webhooks if wh.name == member.display_name), None)
+            if webhook:
+                await webhook.delete(reason="Обращение закрыто")
+
             if member:
                 try:
                     await member.send(

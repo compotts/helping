@@ -112,37 +112,38 @@ class OnMessageListener(commands.Cog):
         if solved_ticket in ticket_channel.applied_tags or in_waiting in ticket_channel.applied_tags:
             return
 
+        webhooks = await ticket_channel.parent.webhooks()
+        webhook = next((wh for wh in webhooks if wh.name == message.author.display_name), None)
+
+        if webhook is None:
+            webhook = await ticket_channel.parent.create_webhook(
+                name=message.author.display_name,
+                avatar=message.author.display_avatar
+            )
+
         embed = disnake.Embed(
             description=message.content,
             color=0x2F3136,
-        ).set_author(
-            name=message.author.display_name,
-            icon_url=guild.icon.url
         )
 
         if message.attachments:
-            if len(message.attachments) > 1:
-                for att in message.attachments:
-                    file = await att.to_file()
-                    if not file:
-                        continue
+            attachments = []
+            for att in message.attachments:
+                file = await att.to_file()
+                if not file:
+                    continue
+                attachments.append(file)
 
-                    embed.set_image(file=file)
-                    await ticket_channel.send(
-                        embed=embed
-                    )
-            else:
-                file = await message.attachments[0].to_file()
-                if file:
-                    embed.set_image(file=file)
-                    await ticket_channel.send(
-                        embed=embed
-                    )
-                else:
-                    return
+            await webhook.send(
+                embed=embed,
+                thread=ticket_channel,
+                files=attachments
+            )
+
         else:
-            await ticket_channel.send(
-                embed=embed
+            await webhook.send(
+                embed=embed,
+                thread=ticket_channel
             )
 
 
